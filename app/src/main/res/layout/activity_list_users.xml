@@ -17,4 +17,16 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/list1" />
+
+    <Button
+        android:text="Log out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="18dp"
+        android:id="@+id/logout"
+        android:onClick="Logout" />
+
 </RelativeLayout>

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -40,7 +41,7 @@ public class ListUsersActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         ListView listView = (ListView) findViewById(R.id.list1);
                         ArrayList<String> list = new ArrayList<>();
-                        // Display the first 500 characters of the response string.
+
                         String json = new String(response);
                         Log.d("Response is: ", json);
 
@@ -49,7 +50,6 @@ public class ListUsersActivity extends AppCompatActivity {
 
                         for(int i=0;i<userObject.users.size();i++) {
                             list.add(i,userObject.users.get(i).getUser_id());
-                            Log.d("user", list.get(i));
                         }
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(ListUsersActivity.this,android.R.layout.simple_list_item_1,list);
                         listView.setAdapter(adapter);
@@ -67,8 +67,6 @@ public class ListUsersActivity extends AppCompatActivity {
                         });
 
 
-
-                        //textView.setText(list);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -87,6 +85,18 @@ public class ListUsersActivity extends AppCompatActivity {
         };
 // Add the request to the RequestQueue.
         queue.add(stringRequest);
+    }
+
+
+    public void Logout(View view) {
+        SendBird.disconnect(new SendBird.DisconnectHandler() {
+            @Override
+            public void onDisconnected() {
+
+                Toast.makeText(ListUsersActivity.this, "Logged out",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 }
