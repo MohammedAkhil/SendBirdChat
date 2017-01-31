@@ -25,11 +25,13 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.1.0'
-    testCompile 'junit:junit:4.12'
     compile 'com.sendbird.sdk:sendbird-android-sdk:3.0.14'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.github.satyan:sugar:1.4'
     compile 'com.android.volley:volley:1.0.0'
+    compile 'com.google.firebase:firebase-core:10.0.1'
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
+    testCompile 'junit:junit:4.12'
 }
 
 
@@ -37,4 +39,5 @@ repositories {
     maven { url "https://raw.githubusercontent.com/smilefam/SendBird-SDK-Android/master/" }
 }
 
-//apply plugin: 'com.google.gms.google-services'
+
+apply plugin: 'com.google.gms.google-services'

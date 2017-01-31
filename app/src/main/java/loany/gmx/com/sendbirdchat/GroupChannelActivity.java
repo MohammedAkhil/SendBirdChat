@@ -1,14 +1,19 @@
 package loany.gmx.com.sendbirdchat;
 
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.database.MatrixCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,29 +39,97 @@ public class GroupChannelActivity extends AppCompatActivity {
     String channelName;
     private static final String identifier = "SendBirdGroupChannelList";
     private PreviousMessageListQuery mPrevMessageListQuery;
-    List<Messages> prevMessages = new ArrayList<>();
+    private ChatArrayAdapter chatArrayAdapter;
+    private ListView listView;
+    private EditText chatText;
+    private Button buttonSend;
+    private boolean side = true;
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group_channel);
-        sentText = (TextView) findViewById(R.id.sentMessage);
-        sendText = (EditText) findViewById(R.id.sendMessage);
+        setContentView(R.layout.chat_screen);
+        buttonSend = (Button) findViewById(R.id.send);
+        listView = (ListView) findViewById(R.id.msgview);
+
+
 
         receiver = getIntent().getStringExtra("User1");
         sender = getIntent().getStringExtra("User2");
 
+
         List<String> users = new ArrayList<>();
         users.add(sender);
         users.add(receiver);
-
         channelName = sender + "-and-" + receiver;
-
         CreateGroupChannel(users);
 
 
+
+
+        chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(), R.layout.right);
+        listView.setAdapter(chatArrayAdapter);
+
+        chatText = (EditText) findViewById(R.id.msg);
+        chatText.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    return sendChatMessage();
+                }
+                return false;
+            }
+        });
+        buttonSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                sendChatMessage();
+            }
+        });
+
+        listView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+        listView.setAdapter(chatArrayAdapter);
+
+        //to scroll the list view to bottom on data change
+        chatArrayAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                listView.setSelection(chatArrayAdapter.getCount() - 1);
+            }
+        });
+
+
+
     }
+
+    private boolean sendChatMessage() {
+        channel.sendUserMessage(chatText.getText().toString(), new BaseChannel.SendUserMessageHandler() {
+            @Override
+            public void onSent(UserMessage userMessage, SendBirdException e) {
+                if (e != null) {
+                    // Error.
+                    Log.d("Error", "MSG not sent");
+                    return;
+                }
+
+                //sentText.setText(sendText.getText().toString());
+
+                chatArrayAdapter.add(new ChatMessage(side, chatText.getText().toString()));
+                chatText.setText("");
+                //side = !side;
+
+
+            }
+        });
+
+        return true;
+    }
+
+
+
 
     public void CreateGroupChannel(List<String> users) {
         GroupChannel.createChannelWithUserIds(users, true, channelName, null, null, new GroupChannel.GroupChannelCreateHandler() {
@@ -74,20 +147,6 @@ public class GroupChannelActivity extends AppCompatActivity {
         });
     }
 
-    public void send(View view) {
-        channel.sendUserMessage(sendText.getText().toString(), new BaseChannel.SendUserMessageHandler() {
-            @Override
-            public void onSent(UserMessage userMessage, SendBirdException e) {
-                if (e != null) {
-                    // Error.
-                    Log.d("Error", "MSG not sent");
-                    return;
-                }
-
-                sentText.setText(sendText.getText().toString());
-            }
-        });
-    }
 
 
     @Override
@@ -104,7 +163,8 @@ public class GroupChannelActivity extends AppCompatActivity {
             @Override
             public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
                 if (baseChannel instanceof GroupChannel) {
-
+                    chatArrayAdapter.add(new ChatMessage(!side, ((UserMessage) baseMessage).getMessage()));
+                    chatText.setText("");
                 }
             }
 
@@ -153,14 +213,18 @@ public class GroupChannelActivity extends AppCompatActivity {
                     }
 
                     Messages msg = new Messages(sender, receiver, ((UserMessage) message).getMessage());
-                    //prevMessages.add(msg);
-
-
+                    msg.save();
 
 
                 }
-                Messages.saveInTx();
-                Log.d("msg","hello boss");
+
+                List<Messages> messagesList = Messages.listAll(Messages.class);
+                for(Messages messages1 : messagesList) {
+                    chatArrayAdapter.add(new ChatMessage(side,messages1.getMessage()));
+                }
+
+
+
             }
         });
 

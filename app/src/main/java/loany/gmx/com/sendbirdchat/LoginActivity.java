@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
@@ -68,6 +69,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+
+
+
     public void Login(View view) {
         SendBirdLogin();
         Intent intent = new Intent(LoginActivity.this, ListUsersActivity.class);
@@ -84,6 +88,18 @@ public class LoginActivity extends AppCompatActivity {
                     // Error.
                     return;
                 }
+                if (FirebaseInstanceId.getInstance().getToken() == null) return;
+
+                SendBird.registerPushTokenForCurrentUser(FirebaseInstanceId.getInstance().getToken(),
+                        new SendBird.RegisterPushTokenWithStatusHandler() {
+                            @Override
+                            public void onRegistered(SendBird.PushTokenRegistrationStatus status, SendBirdException e) {
+                                if (e != null) {
+                                    // Error.
+                                    return;
+                                }
+                            }
+                        });
             }
         });
     }

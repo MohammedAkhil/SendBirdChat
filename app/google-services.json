@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "72697152122",
+    "firebase_url": "https://sendbirdchat-ddb94.firebaseio.com",
+    "project_id": "sendbirdchat-ddb94",
+    "storage_bucket": "sendbirdchat-ddb94.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72697152122:android:657d68a30e062553",
+        "android_client_info": {
+          "package_name": "loany.gmx.com.sendbirdchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72697152122-6h6dkdei2aavdkclidquqj5shoqqhbp6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "loany.gmx.com.sendbirdchat",
+            "certificate_hash": "EA2A6511A4BD79454CB9125BFC20F5A39F87F406"
+          }
+        },
+        {
+          "client_id": "72697152122-pbs8f5jjdft9icgmv0v7l7tljvgi9q35.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgLn5XdkLyH0fZPVt0IrX4TNXYKLmEZdM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72697152122-pbs8f5jjdft9icgmv0v7l7tljvgi9q35.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

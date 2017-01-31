@@ -97,6 +97,7 @@ public class ListUsersActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG).show();
             }
         });
+        finish();
     }
 
 }
